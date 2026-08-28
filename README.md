@@ -31,7 +31,11 @@ A dynamic e-commerce web application built with React and Vite that allows users
 
 <img width="1917" height="902" alt="Product Grid" src="https://github.com/user-attachments/assets/021f57d1-693d-47a6-98c4-341f2083252f" />
 
+---
+
 <img width="1917" height="897" alt="Product Details" src="https://github.com/user-attachments/assets/a02479e1-e88f-43e8-b008-1730c99ea341" />
+
+---
 
 <img width="1917" height="901" alt="Cart View" src="https://github.com/user-attachments/assets/cd3b8381-45e5-433f-93a0-9ae00122e288" />
 
