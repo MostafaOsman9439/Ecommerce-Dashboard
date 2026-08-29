@@ -33,12 +33,12 @@ function Cart({ cart, deleteFromCart, updateQuantity }) {
         Your Shopping Cart
       </h2>
 
-      <div className="flex flex-col lg:flex-row gap-8">
+      <div className="flex flex-col md:flex-row gap-8">
         <div className="flex-1 space-y-4">
           {cart.map((item) => (
             <div
               key={item.id}
-              className="bg-slate-800 p-4 rounded-xl border border-slate-700 flex items-center justify-between gap-4 shadow-md flex-col min-[400px]:flex-row"
+              className="bg-slate-800 p-4 rounded-xl border border-slate-700 flex items-center justify-between gap-4 shadow-md flex-col min-[450px]:flex-row"
             >
               <div className="bg-white p-2 rounded-lg w-full h-30 min-[450px]:w-20 min-[450px]:h-20 shrink-0 flex justify-center items-center">
                 <img
@@ -88,7 +88,7 @@ function Cart({ cart, deleteFromCart, updateQuantity }) {
           ))}
         </div>
 
-        <div className="w-full lg:w-80 bg-slate-800 p-6 rounded-xl border border-slate-700 h-fit shadow-lg">
+        <div className="w-full lg:w-80 md:w-80 bg-slate-800 p-6 rounded-xl border border-slate-700 h-fit shadow-lg">
           <h3 className="text-xl font-bold text-white mb-4 border-b border-slate-700 pb-2">
             Order Summary
           </h3>
