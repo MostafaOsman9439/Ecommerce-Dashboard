@@ -40,7 +40,7 @@ function Cart({ cart, deleteFromCart, updateQuantity }) {
               key={item.id}
               className="bg-slate-800 p-4 rounded-xl border border-slate-700 flex items-center justify-between gap-4 shadow-md flex-col min-[400px]:flex-row"
             >
-              <div className="bg-white p-2 rounded-lg w-full h-30 shrink-0 flex justify-center items-center">
+              <div className="bg-white p-2 rounded-lg w-full h-30 min-[450px]:w-20 min-[450px]:h-20 shrink-0 flex justify-center items-center">
                 <img
                   src={item.image}
                   alt={item.title}
