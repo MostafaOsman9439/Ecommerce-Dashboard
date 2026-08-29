@@ -38,7 +38,7 @@ function Cart({ cart, deleteFromCart, updateQuantity }) {
           {cart.map((item) => (
             <div
               key={item.id}
-              className="bg-slate-800 p-4 rounded-xl border border-slate-700 flex items-center justify-between gap-4 shadow-md"
+              className="bg-slate-800 p-4 rounded-xl border border-slate-700 flex items-center justify-between gap-4 shadow-md flex-col min-[400px]:flex-row"
             >
               <div className="bg-white p-2 rounded-lg w-20 h-20 shrink-0 flex justify-center items-center">
                 <img
@@ -52,34 +52,38 @@ function Cart({ cart, deleteFromCart, updateQuantity }) {
                 <h3 className="text-white font-bold text-sm sm:text-base line-clamp-1">
                   {item.title}
                 </h3>
-                <p className="text-emerald-400 font-bold mt-1">
+                <p className="text-emerald-400 font-bold mt-1 flex justify-center">
                   ${item.price} * {item.quantity} = $
                   {item.price * item.quantity.toFixed(2)}
                 </p>
               </div>
-
-              <div className="flex items-center gap-2 bg-slate-900 p-1 rounded-lg border border-slate-700">
-                <button
-                  onClick={() => updateQuantity(item.id, -1)}
-                  className="w-7 h-7 bg-slate-800 text-white rounded font-bold hover:bg-slate-700 transition"
-                >
-                  -
-                </button>
-                <span className="font-bold text-sm px-1">{item.quantity}</span>
-                <button
-                  onClick={() => updateQuantity(item.id, 1)}
-                  className="w-7 h-7 bg-slate-800 text-white rounded font-bold hover:bg-slate-700 transition"
-                >
-                  +
-                </button>
+              <div className="flex justify-between gap-5 min-[450px]:flex-row items-center flex-col">
+                <div className="flex items-center gap-2 bg-slate-900 p-1 rounded-lg border border-slate-700">
+                  <button
+                    onClick={() => updateQuantity(item.id, -1)}
+                    className="w-7 h-7 bg-slate-800 text-white rounded font-bold hover:bg-slate-700 transition"
+                  >
+                    -
+                  </button>
+                  <span className="font-bold text-sm px-1">
+                    {item.quantity}
+                  </span>
+                  <button
+                    onClick={() => updateQuantity(item.id, 1)}
+                    className="w-7 h-7 bg-slate-800 text-white rounded font-bold hover:bg-slate-700 transition"
+                  >
+                    +
+                  </button>
+                </div>
+                <div>
+                  <button
+                    onClick={() => deleteFromCart(item.id)}
+                    className="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white px-3 py-2 rounded-lg text-sm font-semibold border border-red-500/30 transition duration-200"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-
-              <button
-                onClick={() => deleteFromCart(item.id)}
-                className="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white px-3 py-2 rounded-lg text-sm font-semibold border border-red-500/30 transition duration-200"
-              >
-                Delete
-              </button>
             </div>
           ))}
         </div>
