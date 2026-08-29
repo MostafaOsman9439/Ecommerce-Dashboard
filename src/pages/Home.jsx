@@ -137,23 +137,42 @@ function Home({ addToCart, editCartProduct, deleteFromCart }) {
       <h2 className="text-3xl font-extrabold text-emerald-400 mb-8 border-b border-slate-700 pb-4">
         Explore Products
       </h2>
-      <div className="flex flex-col min-[953px]:flex-row items-center justify-between gap-4 mb-6 whitespace-nowrap">
-        <div className="flex gap-2 overflow-x-auto pb-2 min-[953px]:pb-0 scrollbar-none">
+      <div className="flex flex-col min-[953px]:flex-row items-stretch min-[953px]:items-center justify-between gap-4 mb-6">
+        <div className="block min-[600px]:hidden w-full">
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="w-full bg-slate-800 text-emerald-400 font-bold border border-slate-700 px-4 py-2.5 rounded-lg text-sm outline-none focus:border-emerald-400 capitalize"
+          >
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                Category: {cat}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="hidden min-[600px]:flex gap-2 flex-wrap">
           {categories.map((cat) => (
             <button
-              key={cat} // Spacial Key Helps (React) To Know Which Part Did The User Change When Rendering
+              key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition ${selectedCategory === cat ? "bg-emerald-500 text-slate-900 font-bold" : "bg-slate-800 text-slate-300 hover:bg-slate-700"}`}
+              className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition ${
+                selectedCategory === cat
+                  ? "bg-emerald-500 text-slate-900 font-bold"
+                  : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+              }`}
             >
               {cat}
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-3 min-[953px]:self-auto">
+
+        <div className="flex flex-col min-[400px]:flex-row items-center justify-between min-[953px]:justify-end gap-3 w-full min-[953px]:w-auto">
           <select
-            value={sortOrder} // Makes Sure That The Exact Order Shown/Displayed For The User Is The Same Order Stored In (State)
-            onChange={(e) => setSortOrder(e.target.value)} // (setSortOrder) Taking The (e.target.value) And Updates The State With It (Rendering With The New Order)
-            className="bg-slate-800 text-slate-200 border border-slate-700 px-3 py-2 rounded-lg text-sm  outline-none focus:border-emerald-400"
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+            className="bg-slate-800 text-slate-200 border border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-400"
           >
             <option value="default">Sort by: Default</option>
             <option value="low-to-high">Price: Low to High</option>
@@ -162,7 +181,7 @@ function Home({ addToCart, editCartProduct, deleteFromCart }) {
 
           <button
             onClick={() => setIsAddOpen(true)}
-            className="bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold px-4 py-2 rounded-lg text-sm transition "
+            className="bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold px-4 py-2 rounded-lg text-sm transition whitespace-nowrap"
           >
             + Add New Product
           </button>
