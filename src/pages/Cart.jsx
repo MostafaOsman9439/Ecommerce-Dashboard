@@ -54,7 +54,7 @@ function Cart({ cart, deleteFromCart, updateQuantity }) {
                 </h3>
                 <p className="text-emerald-400 font-bold mt-1 flex justify-center">
                   ${item.price} * {item.quantity} = $
-                  {item.price * item.quantity.toFixed(2)}
+                  {(item.price * item.quantity).toFixed(2)}
                 </p>
               </div>
               <div className="flex justify-between gap-5 min-[450px]:flex-row items-center flex-col">
