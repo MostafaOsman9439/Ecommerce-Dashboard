@@ -3,12 +3,12 @@ import { useEffect, useState } from "react"; // useState Acts As A Memory, When 
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom"; // An External Library Responsible For Navigating Between Pages Without The Page Having To Refresh.
 import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
-import Cart from "./pages/Cart";
+import Cart from "./pages/cart";
 
-function App() {
+function App() { // 
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem("my_cart");
-    return savedCart ? JSON.parse(savedCart) : [];
+    return savedCart ? JSON.parse(savedCart) : []; // To Make Sure It Only Works Once At The First Rendering (Mounting) Not With Every Render
   });
 
   useEffect(() => {
@@ -16,8 +16,8 @@ function App() {
   }, [cart]);
 
   const addToCart = (product) => {
-    // Instead Of Giving It A Direct Value, So That If The User Did Press The Product So Fast That The Didn't Load Yet,
-    // It Will Only Add The Product Once Instead Of That, It Pass Throw A Function Called (prevCart) That Holds The Latest Correct And Accurate Value
+    // Instead Of Giving It A Direct Value, So That If The User Did Press The Product So Fast That The Website Didn't Load Yet,
+    // It Will Only Add The Product Once And It Will Only Read The Old Value Instead Of That, It Pass A Function Called (prevCart) That Holds The Latest Correct And Accurate Value
     // This prevents "Stale State" bugs during rapid clicks.
     setCart((prevCart) => {
       // Using .find() To See If The Product Already Exists In The (prevCart), If True Add It To The (isExist) And Go For The (map)/Add +1 To It
