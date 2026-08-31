@@ -11,7 +11,8 @@ function ProductDetail({ addToCart }) {
 
   useEffect(() => {
     const savedProducts = JSON.parse(localStorage.getItem("my_products")) || [];
-    const foundProduct = savedProducts.find((p) => String(p.id) === String(id));
+    const foundProduct = savedProducts.find((p) => String(p.id) === String(id)); // The Parameter That Comes From The Url Always Type Of String 
+    // While The ID That Comes From Date.now Or API Always Comes As A Number Thats Why We Have To Make Them Both String To Prevent The Product From Disappearing
     if (foundProduct) {
       setProduct(foundProduct);
       setLoading(false);
