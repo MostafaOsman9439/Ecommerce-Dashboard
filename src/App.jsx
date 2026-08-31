@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"; // useState Acts As A Memory, When 
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom"; // An External Library Responsible For Navigating Between Pages Without The Page Having To Refresh.
 import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
-import Cart from "./pages/cart";
+import Cart from "./pages/Cart";
 
 function App() { // 
   const [cart, setCart] = useState(() => {
