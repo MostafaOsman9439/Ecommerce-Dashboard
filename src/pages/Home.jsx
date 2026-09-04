@@ -3,11 +3,13 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-function Home({ addToCart, editCartProduct, deleteFromCart }) {
+function Home({ addToCart, editCartProduct, deleteFromCart, admin }) {
   // In Bigger Projects Instead Of Using State To Avoid Prop Drilling We Can Use (Context API) Or For Huge Projects We Can Use Global State Management Like (Zustand Or Redux Toolkit)
   // We Are Using useState Six times Once For Storing The Data / And Once To Control The Loading Screen / And Once For The Filtering / And Once For Sorting By The Price / Adding New Product / Storing The New Product Data
   const [products, setProducts] = useState(() => {
-    try { // To Make Sure It Doesn't Call The The LocalStorage With Each Render Instead Of That We Made An Arrow Functions To Make Sure It Only Call It Once At The (Mounting)
+    try {
+      // Momkn 23ml Custom Hook Asmo useLocalStorage bdl m3yd nfs el code kza mra
+      // To Make Sure It Doesn't Call The The LocalStorage With Each Render Instead Of That We Made An Arrow Functions To Make Sure It Only Call It Once At The (Mounting)
       const savedProducts = localStorage.getItem("my_products"); // localStorage Stores The Data As A Strings
       return savedProducts ? JSON.parse(savedProducts) : []; // savedProducts Checks If There Is Data Stored ? If True It Transfer The String Into Array Or Object To Make (State) Able To Use filter/map
     } catch (err) {
@@ -33,7 +35,7 @@ function Home({ addToCart, editCartProduct, deleteFromCart }) {
   // (Set) => It Removes Any Duplicate Item
   // (...) Making Sure It Gives Us Normal Array At The End So We Can Use Our (Map)
   // "all" To Make Sure Our Array Starts With It
-  // We Can Use useMemo(() So It Only recalculate when the products list changes
+  // We Can Use useMemo(() So It Only recalculate when the products list changes Not With Every Render
   const categories = ["all", ...new Set(products.map((p) => p.category))]; // # products.map((p) => p.category) # Checking All The Products Then Extracting The Category Name From It
 
   const filteredProducts = // Stores The Filtered List After Checking If The User Still On The ("all") If True Show All The Products
@@ -173,8 +175,8 @@ function Home({ addToCart, editCartProduct, deleteFromCart }) {
 
         <div className="flex flex-col min-[400px]:flex-row items-center justify-between min-[953px]:justify-end gap-3 w-full min-[953px]:w-auto">
           <select
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value)}
+            value={sortOrder} // Makes Sure That The Exact Order Shown/Displayed For The User Is The Same Order Stored In (State)
+            onChange={(e) => setSortOrder(e.target.value)} // (setSortOrder) Taking The (e.target.value) And Updates The State With It (Rendering With The New Order)
             className="bg-slate-800 text-slate-200 border border-slate-700 px-3 py-2 rounded-lg text-sm outline-none focus:border-emerald-400"
           >
             <option value="default">Sort by: Default</option>
@@ -317,20 +319,22 @@ function Home({ addToCart, editCartProduct, deleteFromCart }) {
             >
               Add To Your Cart
             </button>
-            <div className="flex justify-between gap-4">
-              <button
-                onClick={() => handleDelete(product.id)}
-                className="bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white px-3 py-2 rounded-lg text-sm font-medium transition duration-200 mt-3 flex-2"
-              >
-                Delete Product
-              </button>
-              <button
-                onClick={() => setEditingProduct({ ...product })}
-                className="bg-amber-500/20 hover:bg-amber-500 text-amber-400 hover:text-white px-3 py-2 rounded-lg text-sm font-medium transition duration-200 mt-3 flex-1"
-              >
-                Edit
-              </button>
-            </div>
+            {admin && (
+              <div className="flex justify-between gap-4">
+                <button
+                  onClick={() => handleDelete(product.id)}
+                  className="bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white px-3 py-2 rounded-lg text-sm font-medium transition duration-200 mt-3 flex-2"
+                >
+                  Delete Product
+                </button>
+                <button
+                  onClick={() => setEditingProduct({ ...product })}
+                  className="bg-amber-500/20 hover:bg-amber-500 text-amber-400 hover:text-white px-3 py-2 rounded-lg text-sm font-medium transition duration-200 mt-3 flex-1"
+                >
+                  Edit
+                </button>
+              </div>
+            )}
           </div>
         ))}
       </div>
