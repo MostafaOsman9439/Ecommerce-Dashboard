@@ -5,7 +5,26 @@ import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 
-function App() { // 
+function App() {
+  const [admin, setAdmin] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const admin_username = "admin";
+  const admin_password = "123456";
+
+  const handleAdminLogin = (e) => {
+    e.preventDefault();
+    if (username === admin_username && password === admin_password) {
+      setAdmin(true);
+      setIsLoginOpen(false);
+      setUsername("");
+      setPassword("");
+    } else {
+      alert("Wrong Username Or Password ^-^");
+    }
+  };
+  // Lazy Initial State
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem("my_cart");
     return savedCart ? JSON.parse(savedCart) : []; // To Make Sure It Only Works Once At The First Rendering (Mounting) Not With Every Render
@@ -39,7 +58,7 @@ function App() { //
     setCart((prevCart) =>
       prevCart.map((item) =>
         item.id === editedProduct.id // Checking If The current Id Is The Same Id The User Editing
-          ? { ...editedProduct, quantity: item.quantity } // If True It Gives It The Quantity / False Nothing Changes
+          ? { ...editedProduct, quantity: item.quantity } // If True It Gives It The Quantity And Edit The Name Or The Price And Keep The Other Products Without AnyChange / False Nothing Changes
           : item,
       ),
     );
@@ -79,14 +98,84 @@ function App() { //
     <BrowserRouter>
       <div className="bg-slate-900 min-h-screen text-white">
         <header className="p-4 bg-slate-800 border-b border-slate-700 flex justify-between items-center px-8">
-          <Link to="/" className="text-xl font-bold text-emerald-400">Mini Store</Link>
-          <Link
-            to="/cart"
-            className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-4 py-2 rounded-full font-bold text-sm"
-          >
-            The Cart: {totalItemsCount}
+          <Link to="/" className="text-xl font-bold text-emerald-400">
+            Mini Store
           </Link>
+          <div className="flex gap-5">
+            {!admin ? (
+              <button
+                onClick={() => setIsLoginOpen(true)}
+                className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-4 py-2 rounded-full font-bold text-sm"
+              >
+                Admin Login
+              </button>
+            ) : (
+              <button
+                onClick={() => setAdmin(false)}
+                className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-4 py-2 rounded-full font-bold text-sm"
+              >
+                Logout Admin
+              </button>
+            )}
+            <Link
+              to="/cart"
+              className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-4 py-2 rounded-full font-bold text-sm"
+            >
+              The Cart: {totalItemsCount}
+            </Link>
+          </div>
         </header>
+
+        {isLoginOpen && (
+          <div
+            onClick={() => setIsLoginOpen(false)}
+            className="fixed inset-0 bg-black/70 flex justify-center items-center p-4 z-50"
+          >
+            <form
+              onClick={(e) => e.stopPropagation()}
+              onSubmit={handleAdminLogin}
+              className="bg-slate-800 p-6 rounded-xl border border-slate-700 h-fit justify-center max-w-xl shadow-2xl space-y-4"
+            >
+              <h2 className="text-xl font-bold text-emerald-400">
+                Admin Verification
+              </h2>
+              <input
+                type="text"
+                placeholder="Enter Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-emerald-400"
+              />
+              <input
+                type="password"
+                placeholder="Enter Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-emerald-400"
+              />
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsLoginOpen(false);
+                    setUsername("");
+                    setPassword("");
+                  }}
+                  className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold px-4 py-2 rounded-lg text-sm"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
 
         <Routes>
           <Route
@@ -96,6 +185,7 @@ function App() { //
                 addToCart={addToCart}
                 editCartProduct={editCartProduct}
                 deleteFromCart={deleteFromCart}
+                admin={admin}
               />
             }
           />
