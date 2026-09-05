@@ -141,7 +141,7 @@ function App() {
               </h2>
               <input
                 type="text"
-                placeholder="Enter Username"
+                placeholder="admin"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 autoFocus
@@ -149,7 +149,7 @@ function App() {
               />
               <input
                 type="password"
-                placeholder="Enter Password"
+                placeholder="123456"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-emerald-400"
