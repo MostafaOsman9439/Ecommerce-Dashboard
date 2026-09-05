@@ -1,9 +1,10 @@
 // Opens The Website -> Shows The Loading Screen && Asks The Api For The Data  ->
 // Accepting The Data By useState From The setProducts, Finishes Loading -> Then The map Function Puts The Data Into Carts
+import { parse } from "postcss";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-function Home({ addToCart, editCartProduct, deleteFromCart, admin }) {
+function Home({ addToCart, editCartProduct, deleteFromCart, admin, setCart }) {
   // In Bigger Projects Instead Of Using State To Avoid Prop Drilling We Can Use (Context API) Or For Huge Projects We Can Use Global State Management Like (Zustand Or Redux Toolkit)
   // We Are Using useState Six times Once For Storing The Data / And Once To Control The Loading Screen / And Once For The Filtering / And Once For Sorting By The Price / Adding New Product / Storing The New Product Data
   const [products, setProducts] = useState(() => {
@@ -53,9 +54,11 @@ function Home({ addToCart, editCartProduct, deleteFromCart, admin }) {
   const handleAddProduct = (e) => {
     e.preventDefault();
 
-    if (!formData.title.trim() || formData.price === "")
-      return alert("Please fill in required fields!");
-
+    const priceNum = parseFloat(formData.price);
+    if (!formData.title.trim() || isNaN(priceNum) || priceNum <= 0) {
+      alert("Please fill in required fields!, And a price greater than 0!!");
+      return;
+    }
     const newProduct = {
       // In Bigger Projects Instead Of Using Date.now It May Crash If There Is 2 or More Products Added In The Same Second Instead Of That We Can Import/Use (uuid Or crypto.randomUUID())
       id: Date.now(), // Making New Spacial Id By Using The Date.now
@@ -82,10 +85,43 @@ function Home({ addToCart, editCartProduct, deleteFromCart, admin }) {
     if (deleteFromCart) deleteFromCart(id); // Making Sure Nothing Can Call This Function Excepts If It Was A Prop
   };
 
+  const handleDeleteAll = () => {
+    const isConfirmed = window.confirm(
+      "You Are Deleting All The Products From The Home Page And The Cart",
+    );
+    if (isConfirmed) {
+      setCart([]);
+      setProducts([]);
+      localStorage.setItem("my_products", JSON.stringify([]));
+      localStorage.setItem("my_cart", JSON.stringify([]));
+    }
+  };
+
+  const handleReset = () => {
+    const isConfirmed = window.confirm("You Are Resetting All The Products");
+    if (isConfirmed) {
+      localStorage.removeItem("my_cart");
+      localStorage.removeItem("my_products");
+      if (setCart) setCart([]);
+
+      setLoading(true);
+      fetch("https://fakestoreapi.com/products")
+        .then((res) => res.json())
+        .then((data) => {
+          setProducts(data);
+          localStorage.setItem("my_products", JSON.stringify(data));
+          setLoading(false);
+        });
+    }
+  };
+
   const handleEditProduct = (e) => {
     e.preventDefault();
-    if (!editingProduct.title.trim() || editingProduct.price === "") {
-      return alert("Please fill in required fields!");
+    const priceNum = parseFloat(editingProduct.price);
+
+    if (!editingProduct.title.trim() || isNaN(priceNum) || priceNum <= 0) {
+      alert("Please fill in required fields!, And a price greater than 0!!");
+      return;
     }
 
     const updatedProductsList = products.map((product) =>
@@ -174,6 +210,30 @@ function Home({ addToCart, editCartProduct, deleteFromCart, admin }) {
         </div>
 
         <div className="flex flex-col min-[400px]:flex-row items-center justify-between min-[953px]:justify-end gap-3 w-full min-[953px]:w-auto">
+          {admin && (
+            <button
+              onClick={handleDeleteAll}
+              className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-4 py-2 rounded-lg font-bold text-sm transition-all"
+            >
+              Delete All
+            </button>
+          )}
+          {admin && (
+            <button
+              onClick={handleReset}
+              className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 px-4 py-2 rounded-lg font-bold text-sm transition-all"
+            >
+              Reset Products
+            </button>
+          )}
+          {admin && (
+            <button
+              onClick={() => setIsAddOpen(true)}
+              className="bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold px-4 py-2 rounded-lg text-sm transition whitespace-nowrap"
+            >
+              + Add New Product
+            </button>
+          )}
           <select
             value={sortOrder} // Makes Sure That The Exact Order Shown/Displayed For The User Is The Same Order Stored In (State)
             onChange={(e) => setSortOrder(e.target.value)} // (setSortOrder) Taking The (e.target.value) And Updates The State With It (Rendering With The New Order)
@@ -183,13 +243,6 @@ function Home({ addToCart, editCartProduct, deleteFromCart, admin }) {
             <option value="low-to-high">Price: Low to High</option>
             <option value="high-to-low">Price: High to Low</option>
           </select>
-
-          <button
-            onClick={() => setIsAddOpen(true)}
-            className="bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold px-4 py-2 rounded-lg text-sm transition whitespace-nowrap"
-          >
-            + Add New Product
-          </button>
         </div>
       </div>
 
@@ -214,6 +267,7 @@ function Home({ addToCart, editCartProduct, deleteFromCart, admin }) {
               onChange={(e) =>
                 setFormData({ ...formData, title: e.target.value })
               }
+              autoFocus
               className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-emerald-400"
             />
 
@@ -223,12 +277,27 @@ function Home({ addToCart, editCartProduct, deleteFromCart, admin }) {
               value={formData.price}
               onChange={(e) => {
                 const val = e.target.value;
-                setFormData({
-                  ...formData,
-                  price: val === "" ? "" : parseFloat(val),
-                });
+                if (val === "") {
+                  setFormData({ ...formData, price: "" });
+                  return;
+                }
+                const parsed = parseFloat(val);
+                if (!isNaN(parsed) && parsed > 0) {
+                  setFormData({ ...formData, price: parsed });
+                }
               }}
-              className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-emerald-400"
+              onKeyDown={(e) => {
+                if (
+                  e.key === "-" ||
+                  e.key === "e" ||
+                  e.key === "E" ||
+                  e.key === "ArrowUp" ||
+                  e.key === "ArrowDown"
+                ) {
+                  e.preventDefault();
+                }
+              }}
+              className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-emerald-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
 
             <input
@@ -367,12 +436,27 @@ function Home({ addToCart, editCartProduct, deleteFromCart, admin }) {
               value={editingProduct.price}
               onChange={(e) => {
                 const val = e.target.value;
-                setEditingProduct({
-                  ...editingProduct,
-                  price: val === "" ? "" : parseFloat(val),
-                });
+                if (val === "") {
+                  setEditingProduct({ ...editingProduct, price: "" });
+                  return;
+                }
+                const parsed = parseFloat(val);
+                if (!isNaN(parsed)  && parsed > 0) {
+                  setEditingProduct({ ...editingProduct, price: parsed });
+                }
               }}
-              className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-amber-400"
+              onKeyDown={(e) => {
+                if (
+                  e.key === "-" ||
+                  e.key === "e" ||
+                  e.key === "E" ||
+                  e.key === "ArrowUp" ||
+                  e.key === "ArrowDown"
+                ) {
+                  e.preventDefault();
+                }
+              }}
+              className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-amber-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
 
             <input
