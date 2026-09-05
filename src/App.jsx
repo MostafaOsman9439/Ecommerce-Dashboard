@@ -144,6 +144,7 @@ function App() {
                 placeholder="Enter Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                autoFocus
                 className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-emerald-400"
               />
               <input
@@ -186,6 +187,7 @@ function App() {
                 editCartProduct={editCartProduct}
                 deleteFromCart={deleteFromCart}
                 admin={admin}
+                setCart={setCart}
               />
             }
           />
