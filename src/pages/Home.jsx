@@ -384,7 +384,7 @@ function Home({ addToCart, editCartProduct, deleteFromCart, admin, setCart }) {
 
             <button
               onClick={() => addToCart(product)}
-              className="bg-emerald-500 hover:bg-emerald-600 text-slate-900 py-2 px-3 rounded-lg text-sm font-bold transition justify-center mt-3 w-full"
+              className="bg-emerald-500 hover:bg-emerald-600 text-slate-900 py-2 px-3 rounded-lg text-sm font-bold transition justify-center mt-3 w-full cursor-pointer"
             >
               Add To Your Cart
             </button>
