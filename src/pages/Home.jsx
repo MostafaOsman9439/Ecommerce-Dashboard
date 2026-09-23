@@ -1,6 +1,5 @@
 // Opens The Website -> Shows The Loading Screen && Asks The Api For The Data  ->
 // Accepting The Data By useState From The setProducts, Finishes Loading -> Then The map Function Puts The Data Into Carts
-import { parse } from "postcss";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
