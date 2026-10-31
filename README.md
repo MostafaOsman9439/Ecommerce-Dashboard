@@ -10,10 +10,11 @@ A dynamic e-commerce web application built with React and Vite that allows users
 
 ## Features
 
-- **Browse Products:** Grid display of products dynamically fetched from the Fake Store API.
-- **Product Details:** Dedicated routing (`/product/:id`) to display item details with synced local state.
-- **Cart Management:** Real-time item count, quantity adjustment, and dynamic cart totals.
-- **Data Persistence:** Preserves cart state and custom edits across sessions using `localStorage`.
+- **Browse Products:** Grid of products loaded from the Fake Store API
+- **Product Details:** Dedicated pages at `/product/:id`
+- **Cart:** Add products, increase or decrease quantities, and see the total
+- **Admin view:** Add, edit and delete products
+- **Data Persistence:** Cart and admin product changes are saved in the browser with `localStorage`
 
 ---
 
