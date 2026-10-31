@@ -1,6 +1,6 @@
 # Ecommerce Dashboard (Mini Store)
 
-A dynamic e-commerce web application built with React and Vite that allows users to browse products, view detailed item pages, update local state, and manage a interactive shopping cart.
+A dynamic e-commerce web application built with React and Vite that allows users to browse products, view detailed item pages, update local state, and manage an interactive shopping cart.
 
 <img width="1917" height="906" alt="Mini Store Home" src="https://github.com/user-attachments/assets/800aa95b-e609-49e4-b732-6ec303ee8ac4" />
 
@@ -13,7 +13,7 @@ A dynamic e-commerce web application built with React and Vite that allows users
 - **Browse Products:** Grid of products loaded from the Fake Store API
 - **Product Details:** Dedicated pages at `/product/:id`
 - **Cart:** Add products, increase or decrease quantities, and see the total
-- **Admin view:** Add, edit and delete products
+- **Admin view:** Click the Admin button at the top right. The username and password are shown as placeholders, so you can try add, edit and delete without an account.
 - **Data Persistence:** Cart and admin product changes are saved in the browser with `localStorage`
 
 ---
@@ -27,6 +27,22 @@ A dynamic e-commerce web application built with React and Vite that allows users
 - **State & Storage:** React Hooks (`useState`, `useEffect`) & `LocalStorage`
 
 ---
+
+## Limitations and Next Steps
+
+The admin login is a front-end demo only and is not real security. A real version would use server-side authentication.
+There is no backend, so cart and admin changes are saved only in the browser (`localStorage`). Next I plan to add tests and connect a real database with authentication.
+
+---
+
+## Run Locally
+
+```bash
+git clone https://github.com/MostafaOsman9439/Ecommerce-Dashboard.git
+cd Ecommerce-Dashboard
+npm install
+npm run dev
+```
 
 ## Preview
 
@@ -42,4 +58,4 @@ A dynamic e-commerce web application built with React and Vite that allows users
 
 ---
 
-*Built with passion by Mostafa Osman.*
+Built by Mostafa Osman · [GitHub](https://github.com/MostafaOsman9439) · [LinkedIn](https://www.linkedin.com/in/mostafa-osman-6ba36a43a/)
