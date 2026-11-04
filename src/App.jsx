@@ -10,8 +10,8 @@ function App() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const admin_username = import.meta.env.VITE_ADMIN_USERNAME || "admin";
-  const admin_password = import.meta.env.VITE_ADMIN_PASSWORD || "123456";
+  const admin_username = "admin";
+  const admin_password = "123456";
 
   const handleAdminLogin = (e) => {
     e.preventDefault();

@@ -3,6 +3,16 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
+// Reads the saved products safely. Returns [] if nothing is saved or the data is broken.
+function readSavedProducts() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("my_products"));
+    return Array.isArray(saved) ? saved : [];
+  } catch {
+    return [];
+  }
+}
+
 function Home({ addToCart, editCartProduct, deleteFromCart, admin, setCart }) {
   // In Bigger Projects Instead Of Using State To Avoid Prop Drilling We Can Use (Context API) Or For Huge Projects We Can Use Global State Management Like (Zustand Or Redux Toolkit)
   // We Are Using useState Six times Once For Storing The Data / And Once To Control The Loading Screen / And Once For The Filtering / And Once For Sorting By The Price / Adding New Product / Storing The New Product Data
@@ -19,14 +29,14 @@ function Home({ addToCart, editCartProduct, deleteFromCart, admin, setCart }) {
   });
   const [loading, setLoading] = useState(() => {
     try {
-      return !localStorage.getItem("my_products");
+      return readSavedProducts().length === 0;
     } catch {
       return false;
     }
   });
   const [shouldFetchInitialProducts] = useState(() => {
     try {
-      return !localStorage.getItem("my_products");
+      return readSavedProducts().length === 0;
     } catch {
       return true;
     }
@@ -464,7 +474,7 @@ function Home({ addToCart, editCartProduct, deleteFromCart, admin, setCart }) {
                   return;
                 }
                 const parsed = parseFloat(val);
-                if (!isNaN(parsed)  && parsed > 0) {
+                if (!isNaN(parsed) && parsed > 0) {
                   setEditingProduct({ ...editingProduct, price: parsed });
                 }
               }}
