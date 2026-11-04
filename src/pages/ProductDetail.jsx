@@ -8,26 +8,59 @@ function ProductDetail({ addToCart }) {
   // We Are Using useState Twice Once For Storing The Data / And Once To Control The Loading Screen
   const [product, setProduct] = useState(null); // Storing Data (Products Information) Like (Image, Title, Price, Etc) Starts With Null Until The Data Is Received
   const [loading, setLoading] = useState(true); // The Loading Screen Starting With True Means Start Loading Until The Data Is Received
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const savedProducts = JSON.parse(localStorage.getItem("my_products")) || [];
-    const foundProduct = savedProducts.find((p) => String(p.id) === String(id)); // The Parameter That Comes From The Url Always Type Of String 
-    // While The ID That Comes From Date.now Or API Always Comes As A Number Thats Why We Have To Make Them Both String To Prevent The Product From Disappearing
-    if (foundProduct) {
-      setProduct(foundProduct);
-      setLoading(false);
-    } else {
-      fetch(`https://fakestoreapi.com/products/${id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setProduct(data); // Changing The Null Into The Data We Received
-          setLoading(false); // Stops The Loading Screen Then Displaying The Data (Products).
-        })
-        .catch((err) => {
-          console.log("Error:", err);
-          setLoading(false); // Stops The Loading Screen And Show The Error
-        });
-    }
+    let cancelled = false;
+
+    const loadProduct = async () => {
+      let savedProducts = [];
+      try {
+        savedProducts =
+          JSON.parse(localStorage.getItem("my_products")) || [];
+      } catch (err) {
+        console.error("Error reading localStorage", err);
+      }
+
+      const foundProduct = savedProducts.find(
+        (p) => String(p.id) === String(id),
+      );
+
+      if (foundProduct) {
+        await Promise.resolve();
+        if (!cancelled) {
+          setProduct(foundProduct);
+          setLoading(false);
+        }
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `https://fakestoreapi.com/products/${id}`,
+        );
+        if (!response.ok) throw new Error("Product was not found");
+        const data = await response.json();
+        if (!cancelled) {
+          setProduct(data);
+          setLoading(false);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Unable to load this product. Please try again.",
+          );
+          setLoading(false);
+        }
+      }
+    };
+
+    loadProduct();
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   if (loading) {
@@ -41,7 +74,7 @@ function ProductDetail({ addToCart }) {
   if (!product) {
     return (
       <div className="text-center p-10 text-red-400 font-bold text-lg">
-        The product is unavailable or sold out.
+        {error || "The product is unavailable or sold out."}
       </div>
     );
   }

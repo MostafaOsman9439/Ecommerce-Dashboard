@@ -98,8 +98,13 @@ function Cart({ cart, deleteFromCart, updateQuantity }) {
               ${totalPrice.toFixed(2)}
             </span>
           </div>
-          <button className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold py-3 rounded-lg transition">
-            Checkout
+          <button
+            type="button"
+            disabled
+            title="Checkout is not available yet"
+            className="w-full bg-slate-600 text-slate-400 font-bold py-3 rounded-lg cursor-not-allowed"
+          >
+            Checkout unavailable
           </button>
         </div>
       </div>

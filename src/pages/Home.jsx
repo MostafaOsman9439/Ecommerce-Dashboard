@@ -16,10 +16,22 @@ function Home({ addToCart, editCartProduct, deleteFromCart, admin, setCart }) {
       console.error("Error reading localStorage", err);
       return [];
     }
-  }); // Storing Data/Products Like (Image, Title, Price, Etc) If False It Start With Empty []/Array Until The Data Is Received
+  });
   const [loading, setLoading] = useState(() => {
-    return !localStorage.getItem("my_products");
-  }); // Displaying The Loading Screen Depends On If There Is Data In LocalStorage Or Not
+    try {
+      return !localStorage.getItem("my_products");
+    } catch {
+      return false;
+    }
+  });
+  const [shouldFetchInitialProducts] = useState(() => {
+    try {
+      return !localStorage.getItem("my_products");
+    } catch {
+      return true;
+    }
+  });
+  const [error, setError] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all"); // Function That Filters/Updates The Products Starts With "all" To Display All The Products
   const [sortOrder, setSortOrder] = useState("default"); // For Sorting Starts With Default Until The User Change The Sorting
   const [isAddOpen, setIsAddOpen] = useState(false); // Controlling To Open Or Close The Form Starts false To Be Closed
@@ -96,21 +108,26 @@ function Home({ addToCart, editCartProduct, deleteFromCart, admin, setCart }) {
     }
   };
 
-  const handleReset = () => {
+  const handleReset = async () => {
     const isConfirmed = window.confirm("You Are Resetting All The Products");
     if (isConfirmed) {
-      localStorage.removeItem("my_cart");
-      localStorage.removeItem("my_products");
-      if (setCart) setCart([]);
-
+      setError("");
       setLoading(true);
-      fetch("https://fakestoreapi.com/products")
-        .then((res) => res.json())
-        .then((data) => {
-          setProducts(data);
-          localStorage.setItem("my_products", JSON.stringify(data));
-          setLoading(false);
-        });
+      try {
+        const res = await fetch("https://fakestoreapi.com/products");
+        if (!res.ok) throw new Error("Could not reset products");
+        const data = await res.json();
+        localStorage.removeItem("my_cart");
+        if (setCart) setCart([]);
+        setProducts(data);
+        localStorage.setItem("my_products", JSON.stringify(data));
+      } catch (error) {
+        setError(
+          error instanceof Error ? error.message : "Could not reset products",
+        );
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -136,26 +153,28 @@ function Home({ addToCart, editCartProduct, deleteFromCart, admin, setCart }) {
   };
 
   useEffect(() => {
-    const savedProducts = localStorage.getItem("my_products");
-    const parsed = savedProducts ? JSON.parse(savedProducts) : [];
+    if (!shouldFetchInitialProducts) return;
 
-    if (parsed.length > 0) {
-      setLoading(false);
-    } else {
-      fetch("https://fakestoreapi.com/products")
-        .then((res) => res.json()) // Response
-        .then((data) => {
-          setProducts(data); // Changing The Empty [] Into The Data We Received
-          localStorage.setItem("my_products", JSON.stringify(data));
-          setLoading(false); // Stops The Loading Screen Then Displaying The Data (Products).
-          // console.log(data)
-        })
-        .catch((err) => {
-          console.log("Error Fetching Data:", err);
-          setLoading(false); // Stops The Loading Screen Then Displaying The Error.
-        });
-    }
-  }, []); // The Empty [] To Make Sure The useState Only Works Once When The Page Loads
+    fetch("https://fakestoreapi.com/products")
+      .then((res) => {
+        if (!res.ok) throw new Error("Could not load products");
+        return res.json();
+      })
+      .then((data) => {
+        setProducts(data);
+        localStorage.setItem("my_products", JSON.stringify(data));
+      })
+      .catch((error) => {
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Could not load products. Please try again.",
+        );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [shouldFetchInitialProducts]);
 
   useEffect(() => {
     // (useEffect) It Checks If There Is Any Changes In The (Products)
@@ -177,6 +196,11 @@ function Home({ addToCart, editCartProduct, deleteFromCart, admin, setCart }) {
       <h2 className="text-3xl font-extrabold text-emerald-400 mb-8 border-b border-slate-700 pb-4">
         Explore Products
       </h2>
+      {error && (
+        <p role="alert" className="mb-6 text-red-400">
+          {error}
+        </p>
+      )}
       <div className="flex flex-col min-[953px]:flex-row items-stretch min-[953px]:items-center justify-between gap-4 mb-6">
         <div className="block min-[600px]:hidden w-full">
           <select

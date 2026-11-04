@@ -10,8 +10,8 @@ function App() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const admin_username = "admin";
-  const admin_password = "123456";
+  const admin_username = import.meta.env.VITE_ADMIN_USERNAME || "admin";
+  const admin_password = import.meta.env.VITE_ADMIN_PASSWORD || "123456";
 
   const handleAdminLogin = (e) => {
     e.preventDefault();
@@ -26,8 +26,13 @@ function App() {
   };
   // Lazy Initial State
   const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem("my_cart");
-    return savedCart ? JSON.parse(savedCart) : []; // To Make Sure It Only Works Once At The First Rendering (Mounting) Not With Every Render
+    try {
+      const savedCart = localStorage.getItem("my_cart");
+      return savedCart ? JSON.parse(savedCart) : []; // To Make Sure It Only Works Once At The First Rendering (Mounting) Not With Every Render
+    } catch (err) {
+      console.error("Error reading localStorage", err);
+      return [];
+    }
   });
 
   useEffect(() => {
